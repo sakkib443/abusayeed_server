@@ -45,6 +45,8 @@ import { BatchRoutes } from './app/modules/batch/batch.routes';
 import { LiveClassRoutes } from './app/modules/liveClass/liveClass.routes';
 
 
+import { connectDB } from './app/config/db';
+
 // ==================== App Initialization ====================
 const app: Application = express();
 
@@ -54,8 +56,8 @@ const app: Application = express();
 app.use(async (req: Request, res: Response, next) => {
   console.log(`[REQUEST] ${req.method} ${req.url}`);
   try {
-    // Ensure DB is connected for every request
-    await import('./server').then(m => m.connectDB());
+    // Ensure DB is connected for every request (Serverless stability)
+    await connectDB();
     next();
   } catch (error) {
     console.error('Database connection failed during request', error);

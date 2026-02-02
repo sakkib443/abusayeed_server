@@ -6,6 +6,7 @@
 import mongoose from 'mongoose';
 import app from './app';
 import config from './app/config';
+import { connectDB } from './app/config/db';
 
 // ==================== Uncaught Exception Handler ====================
 process.on('uncaughtException', (error) => {
@@ -14,55 +15,6 @@ process.on('uncaughtException', (error) => {
   console.error(error.stack);
   process.exit(1);
 });
-
-// ==================== MongoDB Connection Caching ====================
-// Vercel Serverless এর জন্য connection caching - গুরুত্বপূর্ণ!
-interface CachedConnection {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
-}
-
-declare global {
-  // eslint-disable-next-line no-var
-  var mongooseCache: CachedConnection | undefined;
-}
-
-const cached: CachedConnection = global.mongooseCache || { conn: null, promise: null };
-
-if (!global.mongooseCache) {
-  global.mongooseCache = cached;
-}
-
-export async function connectDB(): Promise<typeof mongoose> {
-  if (cached.conn) {
-    return cached.conn;
-  }
-
-  if (!cached.promise) {
-    const opts: mongoose.ConnectOptions = {
-      bufferCommands: false, // Disable buffering to fail fast if no connection
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 5000, // Lower timeout for faster failure/retry
-      socketTimeoutMS: 45000,
-    };
-
-    console.log('🔌 Connecting to MongoDB...');
-    cached.promise = mongoose.connect(config.database_url, opts).then((mongoose) => {
-      console.log('✅ MongoDB Connected');
-      return mongoose;
-    });
-  }
-
-  try {
-    cached.conn = await cached.promise;
-  } catch (error) {
-    cached.promise = null;
-    console.error('❌ MongoDB Connection Error:', error);
-    throw error;
-  }
-
-  return cached.conn;
-}
 
 // ==================== Cleanup Stale Indexes ====================
 async function cleanupStaleIndexes() {
