@@ -12,6 +12,7 @@ import { Types } from 'mongoose';
 export interface ICategory {
     _id?: Types.ObjectId;
     name: string;           // Category name (e.g., "Ecommerce")
+    name_bn?: string;       // Bengali category name
     slug: string;           // URL-friendly slug (e.g., "ecommerce")
     description?: string;   // Category description
     icon?: string;          // Icon class or URL

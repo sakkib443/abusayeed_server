@@ -18,6 +18,11 @@ const categorySchema = new Schema<ICategory>(
             trim: true,
             maxlength: [100, 'Name cannot exceed 100 characters'],
         },
+        name_bn: {
+            type: String,
+            trim: true,
+            maxlength: [100, 'Bengali name cannot exceed 100 characters'],
+        },
         slug: {
             type: String,
             required: [true, 'Slug is required'],
