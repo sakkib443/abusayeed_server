@@ -6,30 +6,32 @@ import { DESIGN_PLATFORM_OPTIONS, DESIGN_TYPE_OPTIONS, INDUSTRY_OPTIONS } from '
  */
 export const createDesignTemplateValidation = z.object({
     body: z.object({
+        // ── Required: only the essentials ──
         title: z.string({ required_error: 'Title is required' }).min(1).max(200),
-        slug: z.string().optional(),
-        platform: z.enum(DESIGN_PLATFORM_OPTIONS, { required_error: 'Platform is required' }),
         category: z.string({ required_error: 'Category is required' }),
-        templateType: z.enum(DESIGN_TYPE_OPTIONS, { required_error: 'Template type is required' }),
+        images: z.array(z.string()).min(1, 'At least one image is required'),
+
+        // ── Everything else is optional ──
+        slug: z.string().optional(),
+        platform: z.enum(DESIGN_PLATFORM_OPTIONS).optional(),
+        templateType: z.enum(DESIGN_TYPE_OPTIONS).optional(),
         accessType: z.enum(['free', 'paid']).optional().default('paid'),
-        price: z.number({ required_error: 'Price is required' }).min(0),
+        price: z.number().min(0).optional().default(0),
         offerPrice: z.number().min(0).optional().nullable(),
         licenseType: z.enum(['regular', 'extended']).optional().default('regular'),
-        regularLicensePrice: z.number({ required_error: 'Regular license price is required' }).min(0),
+        regularLicensePrice: z.number().min(0).optional().default(0),
         extendedLicensePrice: z.number().min(0).optional().nullable(),
         version: z.string().optional().default('1.0.0'),
         features: z.array(z.string()).optional().default([]),
         filesIncluded: z.array(z.string()).optional().default([]),
-        description: z.string({ required_error: 'Description is required' }).max(1000),
+        description: z.string().max(1000).optional(),
         longDescription: z.string().optional(),
         compatibility: z.array(z.string()).optional().default([]),
-        images: z.array(z.string()).optional().default([]),
         previewUrl: z.string().url().optional().or(z.literal('')),
-        downloadFile: z.string({ required_error: 'Download file is required' }),
+        downloadFile: z.string().optional(),
         documentationUrl: z.string().url().optional().or(z.literal('')),
         status: z.enum(['pending', 'approved', 'rejected', 'draft']).optional(),
         isFeatured: z.boolean().optional(),
-        // New optional fields
         tags: z.array(z.string()).optional().default([]),
         colors: z.array(z.string()).optional().default([]),
         industry: z.enum(INDUSTRY_OPTIONS).optional(),

@@ -24,7 +24,6 @@ const designTemplateSchema = new Schema<IDesignTemplate>(
         platform: {
             type: String,
             enum: DESIGN_PLATFORM_OPTIONS,
-            required: [true, 'Platform is required'],
         },
         category: {
             type: Schema.Types.ObjectId,
@@ -36,7 +35,6 @@ const designTemplateSchema = new Schema<IDesignTemplate>(
         templateType: {
             type: String,
             enum: DESIGN_TYPE_OPTIONS,
-            required: [true, 'Template type is required'],
         },
         accessType: {
             type: String,
@@ -47,7 +45,7 @@ const designTemplateSchema = new Schema<IDesignTemplate>(
         // ==================== Pricing ====================
         price: {
             type: Number,
-            required: [true, 'Price is required'],
+            default: 0,
             min: [0, 'Price cannot be negative'],
         },
         offerPrice: {
@@ -63,7 +61,7 @@ const designTemplateSchema = new Schema<IDesignTemplate>(
         },
         regularLicensePrice: {
             type: Number,
-            required: [true, 'Regular license price is required'],
+            default: 0,
             min: [0, 'Price cannot be negative'],
         },
         extendedLicensePrice: {
@@ -95,7 +93,6 @@ const designTemplateSchema = new Schema<IDesignTemplate>(
         filesIncluded: [{ type: String }],
         description: {
             type: String,
-            required: [true, 'Description is required'],
             maxlength: [1000, 'Description cannot exceed 1000 characters'],
         },
         longDescription: { type: String },
@@ -108,7 +105,6 @@ const designTemplateSchema = new Schema<IDesignTemplate>(
         previewUrl: { type: String },
         downloadFile: {
             type: String,
-            required: [true, 'Download file is required'],
         },
         documentationUrl: { type: String },
 
